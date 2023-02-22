@@ -7,22 +7,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class ProjectSecurityConfig  /*extends WebSecurityConfigurerAdapter*/  {
 
-    /*@Override
-    protected void configure(HttpSecurity http) throws Exception {
-
-        // Permit All Requests inside the Web Application
-        http.authorizeRequests().
-                    anyRequest().permitAll().
-                    and().formLogin()
-                    .and().httpBasic();
-
-        // Deny All Requests inside the Web Application
-        *//*http.authorizeRequests().
-                anyRequest().denyAll().
-                and().formLogin()
-                .and().httpBasic();*//*
-    }*/
-
     /**
      * From Spring Security 5.7, the WebSecurityConfigurerAdapter is deprecated to encourage users
      * to move towards a component-based security configuration. It is recommended to create a bean
@@ -33,21 +17,17 @@ public class ProjectSecurityConfig  /*extends WebSecurityConfigurerAdapter*/  {
      */
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-
-        // Permit All Requests inside the Web Application
-       http.authorizeHttpRequests().anyRequest().permitAll()
-               .and()
-               .formLogin()
-               .and()
-               .httpBasic();
-
-        // Deny All Requests inside the Web Application
-            /*http.authorizeHttpRequests().anyRequest().denyAll().
-                    and().formLogin()
-                    .and().httpBasic();*/
-
+        http.csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/home").permitAll()
+                .requestMatchers("/holidays/**").permitAll()
+                .requestMatchers("/contact").permitAll()
+                .requestMatchers("/saveMsg").permitAll()
+                .requestMatchers("/courses").permitAll()
+                .requestMatchers("/about").permitAll()
+                .requestMatchers("/assets/**").permitAll()
+                .and().formLogin().and().httpBasic();
         return http.build();
-
     }
 
 }
