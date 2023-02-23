@@ -22,14 +22,23 @@ public class ProjectSecurityConfig  /*extends WebSecurityConfigurerAdapter*/  {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/home").authenticated()
+                .requestMatchers("/dashboard").authenticated()
+                .requestMatchers("/home").permitAll()
                 .requestMatchers("/holidays/**").permitAll()
                 .requestMatchers("/contact").permitAll()
                 .requestMatchers("/saveMsg").permitAll()
                 .requestMatchers("/courses").permitAll()
                 .requestMatchers("/about").permitAll()
                 .requestMatchers("/assets/**").permitAll()
-                .and().formLogin().and().httpBasic();
+                .requestMatchers("/login").permitAll()
+                .and().formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/dashboard") //what to show after successful login
+                .failureUrl("/login?error=true").permitAll() //need to make sure its permit all
+                .and()
+                .logout()
+                .logoutSuccessUrl("/login?logout=true").invalidateHttpSession(true).permitAll()
+                .and().httpBasic();
         return http.build();
     }
 
