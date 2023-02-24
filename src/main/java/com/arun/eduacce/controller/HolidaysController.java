@@ -1,30 +1,29 @@
 package com.arun.eduacce.controller;
 
 import com.arun.eduacce.model.Holiday;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 public class HolidaysController {
 
     @GetMapping("/holidays/{display}")
-    public String displayHolidays(@PathVariable String display,
-                                  Model model) {
-
-        if(display!=null && display.equals("all")){
+    public String displayHolidays(@PathVariable String display,Model model) {
+        if(null != display && display.equals("all")){
             model.addAttribute("festival",true);
             model.addAttribute("federal",true);
-        }else if(display!=null && display.equals("festival")){
-            model.addAttribute("festival",true);
-        }else if(display!=null && display.equals("federal")){
+        }else if(null != display && display.equals("federal")){
             model.addAttribute("federal",true);
+        }else if(null != display && display.equals("festival")){
+            model.addAttribute("festival",true);
         }
         List<Holiday> holidays = Arrays.asList(
                 new Holiday(" Jan 1 ","New Year's Day", Holiday.Type.FESTIVAL),
@@ -43,4 +42,5 @@ public class HolidaysController {
         }
         return "holidays.html";
     }
+
 }
