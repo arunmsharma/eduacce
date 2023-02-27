@@ -9,6 +9,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -27,12 +28,12 @@ public class ContactService {
      * @return boolean
      */
     public boolean saveMessageDetails(Contact contact){
-        boolean isSaved = true;
+        boolean isSaved = false;
         contact.setStatus(EduacceConstants.OPEN);
         contact.setCreatedBy(EduacceConstants.ANONYMOUS);
         contact.setCreatedAt(LocalDateTime.now());
-        int result = contactRepository.saveContactMsg(contact);
-        if(result>0){
+        Contact savedContact = contactRepository.save(contact);
+        if(savedContact != null && savedContact.getContactId()>0){
             isSaved = true;
         }
         log.info(contact.toString());
@@ -40,14 +41,20 @@ public class ContactService {
     }
 
     public List<Contact> findMsgsWithOpenStatus(){
-        List<Contact> contactMsgs = contactRepository.findMsgsWithStatus(EduacceConstants.OPEN);
-        return contactMsgs;
+        List<Contact> contacts = contactRepository.findByStatus(EduacceConstants.OPEN);
+        return contacts;
     }
 
     public boolean updateMsgStatus(int contactId, String updatedBy){
         boolean isUpdated = false;
-        int result = contactRepository.updateMsgStatus(contactId,EduacceConstants.CLOSE, updatedBy);
-        if(result>0) {
+        Optional<Contact> contact = contactRepository.findById(contactId);
+        contact.ifPresent(contact1 ->{
+            contact1.setStatus(EduacceConstants.CLOSE);
+            contact1.setUpdatedAt(LocalDateTime.now());
+            contact1.setUpdatedBy(updatedBy);
+        });
+        Contact updatedContact = contactRepository.save(contact.get());
+        if(updatedContact!=null && updatedContact.getContactId()>0){
             isUpdated = true;
         }
         return isUpdated;

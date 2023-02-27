@@ -1,3 +1,7 @@
+create database if not exists eduacce;
+
+use eduacce;
+
 CREATE TABLE IF NOT EXISTS `contact_msg` (
   `contact_id` int AUTO_INCREMENT  PRIMARY KEY,
   `name` varchar(100) NOT NULL,
@@ -12,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `contact_msg` (
   `updated_by` varchar(50) DEFAULT NULL
 );
 
-CREATE TABLE IF NOT EXISTS `HOLIDAYS` (
+CREATE TABLE IF NOT EXISTS `holidays` (
   `day` varchar(20) NOT NULL,
   `reason` varchar(100) NOT NULL,
   `type` varchar(20) NOT NULL,

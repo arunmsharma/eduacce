@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class HolidaysController {
 
 
-    private HolidayRepository holidayRepository;
+    private final HolidayRepository holidayRepository;
 
     @Autowired
     public HolidaysController(HolidayRepository holidayRepository) {
@@ -35,7 +35,7 @@ public class HolidaysController {
         }else if(null != display && display.equals("festival")){
             model.addAttribute("festival",true);
         }
-        List<Holiday> holidays = holidayRepository.findAllHolidays();
+        List<Holiday> holidays = (List<Holiday>) holidayRepository.findAll();
         Holiday.Type[] types = Holiday.Type.values();
         for (Holiday.Type type : types) {
             model.addAttribute(type.toString(),
