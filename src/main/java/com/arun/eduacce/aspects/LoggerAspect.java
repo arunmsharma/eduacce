@@ -19,7 +19,7 @@ public class LoggerAspect {
 
     @Around("execution(* com.arun.eduacce..*.*(..))")
     public Object log(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.info(joinPoint.getSignature().toString() + " method execution start");
+    log.info(joinPoint.getSignature().toString() + " method execution start");
         Instant start = Instant.now();
         Object returnObj = joinPoint.proceed();
         Instant finish = Instant.now();
