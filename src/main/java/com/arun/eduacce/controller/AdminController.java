@@ -121,4 +121,13 @@ public class AdminController {
         modelAndView.setViewName("redirect:/admin/displayCourses");
         return modelAndView;
     }
+
+    @GetMapping("/viewStudents")
+    public ModelAndView viewStudents(Model model, @RequestParam("id") Integer id){
+        ModelAndView modelAndView = new ModelAndView("course_students.html");
+        Optional<Courses> course = coursesRepository.findById(id);
+        modelAndView.addObject("courses",course.get());
+        modelAndView.addObject("person",new Person());
+        return modelAndView;
+    }
 }
