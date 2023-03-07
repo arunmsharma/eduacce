@@ -1,7 +1,9 @@
 package com.arun.eduacce.controller;
 
+import com.arun.eduacce.model.Courses;
 import com.arun.eduacce.model.EduacceClass;
 import com.arun.eduacce.model.Person;
+import com.arun.eduacce.repository.CoursesRepository;
 import com.arun.eduacce.repository.EduacceClassRepository;
 import com.arun.eduacce.repository.PersonRepository;
 import jakarta.servlet.http.HttpSession;
@@ -9,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -28,6 +27,9 @@ public class AdminController {
 
     @Autowired
     PersonRepository personRepository;
+
+    @Autowired
+    CoursesRepository coursesRepository;
 
     @RequestMapping("/displayClasses")
     public ModelAndView displayClasses(Model model){
@@ -100,6 +102,15 @@ public class AdminController {
         personRepository.save(person.get());
         session.setAttribute("eduacceClass",eduacceClassSaved);
         ModelAndView modelAndView = new ModelAndView("redirect:/admin/displayStudents?classId="+eduacceClass.getClassId());
+        return modelAndView;
+    }
+
+    @GetMapping("/displayCourses")
+    public ModelAndView displayCourses(Model model){
+        List<Courses> courses = coursesRepository.findAll();
+        ModelAndView modelAndView = new ModelAndView("courses_secure.html");
+        modelAndView.addObject("courses",courses);
+        modelAndView.addObject("course",new Courses());
         return modelAndView;
     }
 }
