@@ -123,11 +123,37 @@ public class AdminController {
     }
 
     @GetMapping("/viewStudents")
-    public ModelAndView viewStudents(Model model, @RequestParam("id") Integer id){
+    public ModelAndView viewStudents(Model model, @RequestParam("id") Integer id, HttpSession session,
+                                     @RequestParam(value = "error",required = false) String error){
+        String errorMessage = null;
         ModelAndView modelAndView = new ModelAndView("course_students.html");
         Optional<Courses> course = coursesRepository.findById(id);
         modelAndView.addObject("courses",course.get());
         modelAndView.addObject("person",new Person());
+        session.setAttribute("courseId",id);
+        if(error!=null){
+            errorMessage = "Invalid email entered!!";
+            modelAndView.addObject("errorMessage",errorMessage);
+        }
+        return modelAndView;
+    }
+
+    @PostMapping("/addStudentToCourse")
+    public ModelAndView addStudentToCourse(Model model, @ModelAttribute("person") Person person,HttpSession session){
+        ModelAndView modelAndView = new ModelAndView();
+        Integer courseId = (Integer) session.getAttribute("courseId");
+        Optional<Courses> course = coursesRepository.findById(courseId);
+        Person studentEntity = personRepository.readByEmail(person.getEmail());
+        if(studentEntity==null || studentEntity.getPersonId()<0){
+            //error
+            modelAndView.setViewName("redirect:/admin/viewStudents?id="+courseId+"&error=true");
+            return modelAndView;
+        }
+        assert studentEntity != null;
+        studentEntity.getCourses().add(course.get());
+        course.get().getPersons().add(studentEntity);
+        personRepository.save(studentEntity);
+        modelAndView.setViewName("redirect:/admin/viewStudents?id="+courseId);
         return modelAndView;
     }
 }
