@@ -1,14 +1,16 @@
 package com.arun.eduacce.service;
+
 import com.arun.eduacce.Constants.EduacceConstants;
 import com.arun.eduacce.model.Contact;
 import com.arun.eduacce.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.ApplicationScope;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,10 +40,16 @@ public class ContactService {
         return isSaved;
     }
 
-    public List<Contact> findMsgsWithOpenStatus(){
-        List<Contact> contacts = contactRepository.findByStatus(EduacceConstants.OPEN);
-        return contacts;
+    public Page<Contact> findMsgsWithOpenStatus(int pageNum, String sortField, String sortDir){
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize,
+                sortDir.equals("asc") ? Sort.by(sortField).ascending()
+                        : Sort.by(sortField).descending());
+        Page<Contact> msgPage = contactRepository.findByStatus(
+                EduacceConstants.OPEN,pageable);
+        return msgPage;
     }
+
 
     public boolean updateMsgStatus(int contactId){
         boolean isUpdated = false;
