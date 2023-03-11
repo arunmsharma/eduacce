@@ -1,11 +1,13 @@
 package com.arun.eduacce.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.CreditCardNumber;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 
 /*
 @Data annotation is provided by Lombok library which generates getter, setter,
@@ -30,6 +32,7 @@ public class Contact extends BaseEntity{
     * */
     @NotBlank(message="Name must not be blank")
     @Size(min=3, message="Name must be at least 3 characters long")
+    @JsonProperty(value = "person-name")
     private String name;
 
     @NotBlank(message="Mobile number must not be blank")
